@@ -48,8 +48,9 @@
 <!-- BEGIN HEADER -->
 <div class="header">
     <div class="container">
-        <a class="site-logo" href="#"><img src="<?php echo get_template_directory_uri(); ?>/assets/corporate/img/logos/logo-corp-red.png" alt="Metronic FrontEnd"></a>
-
+        <?php
+        the_custom_logo();
+             ?>
         <a href="javascript:void(0);" class="mobi-toggler"><i class="fa fa-bars"></i></a>
 
         <!-- BEGIN NAVIGATION -->
