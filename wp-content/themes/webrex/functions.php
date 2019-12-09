@@ -218,3 +218,32 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 	require get_template_directory() . '/inc/jetpack.php';
 }
 
+
+add_action( 'init', 'prowp_register_my_post_types' );
+function prowp_register_my_post_types() {
+	$args = array(
+		'public' => true,
+		'has_archive' => true,
+		'labels' => array( 'name' => 'Portfolio' ),
+		'taxonomies' => array( 'category' ),
+		'menu_icon' => 'dashicons-images-alt2',
+		'rewrite' => array( 'slug' => 'portfolio' ),
+		'supports' => array( 'title', 'editor', 'author','thumbnail', 'comments' )
+);
+		register_post_type( 'portfolio', $args );
+}
+
+
+add_action( 'init', 'register_about_us_post_type' );
+function register_about_us_post_type() {
+	$args = array(
+		'public' => true,
+		'has_archive' => true,
+		'labels' => array( 'name' => 'About Us' ),
+		'taxonomies' => array( 'category' ),
+		'menu_icon' => 'dashicons-megaphone',
+		'rewrite' => array( 'slug' => 'about-us' ),
+		'supports' => array( 'title', 'editor', 'author','thumbnail', 'comments' )
+	);
+	register_post_type( 'about-us', $args );
+}

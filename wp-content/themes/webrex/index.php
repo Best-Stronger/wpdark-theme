@@ -14,7 +14,13 @@
 
 get_header();
 ?>
-
+<?php
+$args = array(
+	'posts_per_page' => '3',
+	'post_type' => 'about-us',
+);
+$about_us = new WP_Query( $args );
+?>
     <!-- BEGIN ABOUT US BOX -->
     <div class="main">
         <div class="container">
@@ -23,32 +29,34 @@ get_header();
                     <h2>About Us</h2>
                     <p class="header-details"><span class="highlight">Some Recent</span> Projects</p>
                     <p class="lead">We are <span class="highlight">Creative Team</span> located in Kalura, Bovlandia. Tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+<?php
+// The Loop
+while ( $about_us->have_posts() ) : $about_us ->the_post();
+	?>
                     <div class="col-md-4 col-sm-4">
                         <div class="service-box-heading">
                             <em><i class="fa fa-location-arrow blue"></i></em>
-                            <span>Purpose Template</span>
+                            <span><?php echo get_the_title(); ?></span>
                         </div>
-                        <p>Praesent sodales, quam vitae gravida interdum, ex mi bibendum enim, sit amet tristique mi quam vel odio. Donec non nunc condimentum, hendrerit elit sed, condimentum magna. Suspendisse imperdiet purus vel ornare cursus.</p>
+                        <p><?php echo get_the_content(); ?></p>
                     </div>
-                    <div class="col-md-4 col-sm-4">
-                        <div class="service-box-heading">
-                            <em><i class="fa fa-check red"></i></em>
-                            <span>Well Documented</span>
-                        </div>
-                        <p>Curabitur et diam elementum, mollis tortor a, malesuada turpis. Vivamus gravida, justo et molestie sollicitudin, erat lorem tempus eros, vel laoreet nibh urna ac nunc, vestibulum neque vitae pellentesque efficitur.</p>
-                    </div>
-                    <div class="col-md-4 col-sm-4">
-                        <div class="service-box-heading">
-                            <em><i class="fa fa-compress green"></i></em>
-                            <span>Responsive Design</span>
-                        </div>
-                        <p>Sed porta erat vel ipsum maximus, eget maximus est maximus. Maecenas at venenatis nibh, sit amet suscipit odio. In feugiat vehicula dui. In felis enim, maximus a dolor semper efficitur elit euismod magna quis commodo.</p>
-                    </div>
+<?php
+endwhile;
+// Reset Post Data
+wp_reset_postdata();
+?>
                 </div>
             </div>
         </div>
     </div>
     <!-- END ABOUT US BOX -->
+<?php
+$args = array(
+	'posts_per_page' => '-1',
+	'post_type' => 'portfolio',
+);
+$myPortfolio = new WP_Query( $args );
+?>
 
     <!-- BEGIN PORTOFOLIO -->
     <div class="portofolio">
@@ -61,116 +69,51 @@ get_header();
                     </h2>
                     <p class="header-details"><span class="highlight">Some Recent</span> Projects</p>
                     <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.</p>
+
                     <div class="content-page">
                         <div class="filter-v1">
                             <ul class="mix-filter">
                                 <li data-filter="all" class="filter ">All</li>
-                                <li data-filter="category_1" class="filter ">UI Design</li>
-                                <li data-filter="category_2" class=" filter ">Web Development</li>
-                                <li data-filter="category_3" class=" filter ">Photography</li>
-                                <li data-filter="category_3 category_1" class="filter ">Wordpress and Logo</li>
+	                            <?php
+	                            $categories=get_categories('portfolio');
+	                            foreach ($categories as $ones){
+		                            if($ones->parent > 0){
+			                            ?>
+                                        <li data-filter="<?php echo $ones->slug; ?>" class="filter "><?php echo $ones->cat_name; ?></li>
+                                        <?php
+		                            }
+	                            }
+	                            ?>
                             </ul>
                             <div class="row mix-grid thumbnails">
-                                <div class="col-md-3 col-sm-4 mix category_1 mix_all" style="display: block; opacity: 1; ">
-                                    <div class="mix-inner">
-                                        <img alt="" src="<?php echo get_template_directory_uri(); ?>/assets/pages/img/works/img1.jpg" class="img-responsive">
-                                        <div class="mix-details">
-                                            <h4>Cascusamus et iusto odio</h4>
-                                            <a class="mix-link"><i class="fa fa-link"></i></a>
-                                            <a data-rel="fancybox-button" title="Project Name" href="assets/pages/img/works/img1.jpg" class="mix-preview fancybox-button"><i class="fa fa-search"></i></a>
+
+	                            <?php
+	                            // The Loop
+	                            while ( $myPortfolio->have_posts() ) : $myPortfolio ->the_post();
+	                            ?>
+                                    <div class="col-md-3 col-sm-4 mix
+                                    <?php
+		                            $category_detail=get_the_category(get_the_ID());//$post->ID
+		                            foreach($category_detail as $cd){
+			                            echo $cd->slug . ' ';
+		                            }
+//                                the_ID();
+		                            ?>
+                                     category_1 mix_all" style="display: block; opacity: 1; ">
+                                        <div class="mix-inner">
+                                            <img alt="" src="<?php echo get_the_post_thumbnail_url(); ?>" class="img-responsive">
+                                            <div class="mix-details">
+                                                <h4><?php echo get_the_title(); ?></h4>
+                                                <a href="<?php echo get_post_embed_url();?>" class="mix-link"><i class="fa fa-link"></i></a>
+                                                <a data-rel="fancybox-button" title="<?php echo get_the_title(); ?>" href="<?php echo get_the_post_thumbnail_url(); ?>" class="mix-preview fancybox-button"><i class="fa fa-search"></i></a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 mix category_2 mix_all" style="display: block; opacity: 1; ">
-                                    <div class="mix-inner">
-                                        <img alt="" src="<?php echo get_template_directory_uri(); ?>/assets/pages/img/works/img2.jpg" class="img-responsive">
-                                        <div class="mix-details">
-                                            <h4>Cascusamus et iusto accusamus</h4>
-                                            <a class="mix-link"><i class="fa fa-link"></i></a>
-                                            <a data-rel="fancybox-button" title="Project Name" href="assets/pages/img/works/img2.jpg" class="mix-preview fancybox-button"><i class="fa fa-search"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 mix category_3 mix_all" style="display: block; opacity: 1; ">
-                                    <div class="mix-inner">
-                                        <img alt="" src="<?php echo get_template_directory_uri(); ?>/assets/pages/img/works/img3.jpg" class="img-responsive">
-                                        <div class="mix-details">
-                                            <h4>Cascusamus et iusto accusamus</h4>
-                                            <a class="mix-link"><i class="fa fa-link"></i></a>
-                                            <a data-rel="fancybox-button" title="Project Name" href="assets/pages/img/works/img3.jpg" class="mix-preview fancybox-button"><i class="fa fa-search"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 mix category_1 category_2 mix_all" style="display: block; opacity: 1; ">
-                                    <div class="mix-inner">
-                                        <img alt="" src="<?php echo get_template_directory_uri(); ?>/assets/pages/img/works/img4.jpg" class="img-responsive">
-                                        <div class="mix-details">
-                                            <h4>Cascusamus et iusto accusamus</h4>
-                                            <a class="mix-link"><i class="fa fa-link"></i></a>
-                                            <a data-rel="fancybox-button" title="Project Name" href="assets/pages/img/works/img4.jpg" class="mix-preview fancybox-button"><i class="fa fa-search"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 mix category_2 category_1 mix_all" style="display: block; opacity: 1; ">
-                                    <div class="mix-inner">
-                                        <img alt="" src="<?php echo get_template_directory_uri(); ?>/assets/pages/img/works/img5.jpg" class="img-responsive">
-                                        <div class="mix-details">
-                                            <h4>Cascusamus et iusto accusamus</h4>
-                                            <a class="mix-link"><i class="fa fa-link"></i></a>
-                                            <a data-rel="fancybox-button" title="Project Name" href="assets/pages/img/works/img5.jpg" class="mix-preview fancybox-button"><i class="fa fa-search"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 mix category_1 category_2 mix_all" style="display: block; opacity: 1; ">
-                                    <div class="mix-inner">
-                                        <img alt="" src="<?php echo get_template_directory_uri(); ?>/assets/pages/img/works/img6.jpg" class="img-responsive">
-                                        <div class="mix-details">
-                                            <h4>Cascusamus et iusto accusamus</h4>
-                                            <a class="mix-link"><i class="fa fa-link"></i></a>
-                                            <a data-rel="fancybox-button" title="Project Name" href="assets/pages/img/works/img6.jpg" class="mix-preview fancybox-button"><i class="fa fa-search"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 mix category_2 category_3 mix_all" style="display: block; opacity: 1; ">
-                                    <div class="mix-inner">
-                                        <img alt="" src="<?php echo get_template_directory_uri(); ?>/assets/pages/img/works/img1.jpg" class="img-responsive">
-                                        <div class="mix-details">
-                                            <h4>Cascusamus et iusto accusamus</h4>
-                                            <a class="mix-link"><i class="fa fa-link"></i></a>
-                                            <a data-rel="fancybox-button" title="Project Name" href="assets/pages/img/works/img1.jpg" class="mix-preview fancybox-button"><i class="fa fa-search"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 mix category_1 category_2 mix_all" style="display: block; opacity: 1; ">
-                                    <div class="mix-inner">
-                                        <img alt="" src="<?php echo get_template_directory_uri(); ?>/assets/pages/img/works/img2.jpg" class="img-responsive">
-                                        <div class="mix-details">
-                                            <h4>Cascusamus et iusto accusamus</h4>
-                                            <a class="mix-link"><i class="fa fa-link"></i></a>
-                                            <a data-rel="fancybox-button" title="Project Name" href="assets/pages/img/works/img2.jpg" class="mix-preview fancybox-button"><i class="fa fa-search"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 mix category_3 mix_all" style="display: block; opacity: 1; ">
-                                    <div class="mix-inner">
-                                        <img alt="" src="<?php echo get_template_directory_uri(); ?>/assets/pages/img/works/img4.jpg" class="img-responsive">
-                                        <div class="mix-details">
-                                            <h4>Cascusamus et iusto accusamus</h4>
-                                            <a class="mix-link"><i class="fa fa-link"></i></a>
-                                            <a data-rel="fancybox-button" title="Project Name" href="assets/pages/img/works/img4.jpg" class="mix-preview fancybox-button"><i class="fa fa-search"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 mix category_1 mix_all" style="display: block; opacity: 1; ">
-                                    <div class="mix-inner">
-                                        <img alt="" src="<?php echo get_template_directory_uri(); ?>/assets/pages/img/works/img3.jpg" class="img-responsive">
-                                        <div class="mix-details">
-                                            <h4>Cascusamus et iusto accusamus</h4>
-                                            <a class="mix-link"><i class="fa fa-link"></i></a>
-                                            <a data-rel="fancybox-button" title="Project Name" href="assets/pages/img/works/img3.jpg" class="mix-preview fancybox-button"><i class="fa fa-search"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
+                                <?php
+	                            endwhile;
+	                            // Reset Post Data
+	                            wp_reset_postdata();
+	                            ?>
                             </div>
                         </div>
                     </div>
