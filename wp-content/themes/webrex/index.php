@@ -31,11 +31,13 @@ $about_us = new WP_Query( $args );
                     <p class="lead">We are <span class="highlight">Creative Team</span> located in Kalura, Bovlandia. Tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
 <?php
 // The Loop
+$icons = array('fa fa-location-arrow blue', 'fa fa-check red', 'fa fa-compress green');
+$i = 0;
 while ( $about_us->have_posts() ) : $about_us ->the_post();
 	?>
                     <div class="col-md-4 col-sm-4">
                         <div class="service-box-heading">
-                            <em><i class="fa fa-location-arrow blue"></i></em>
+                            <em><i class="<?php echo $icons[$i++]; ?>"></i></em>
                             <span><?php echo get_the_title(); ?></span>
                         </div>
                         <p><?php echo get_the_content(); ?></p>
